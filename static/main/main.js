@@ -1,0 +1,241 @@
+while (!window.L) {
+  await new Promise((r) => setTimeout(r, 1000));
+}
+
+let startDate = document.getElementById("startDate");
+let endDate = document.getElementById("endDate");
+let locationApi = await load("locations.js");
+let userApi = await load("user.js");
+let dataApi = await load("data.js");
+let currentlySelectedObj;
+let currentUserId;
+let prevGeo = [];
+
+const map = L.map("map").setView([0, 0]);
+map.setZoom(5);
+
+L.tileLayer(
+  "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
+  {
+    attribution:
+      'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a> Proxtx',
+    maxZoom: 18,
+    id: "mapbox/streets-v11",
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: document.getElementById("accessToken").getAttribute("data"),
+  }
+).addTo(map);
+
+window.map = map;
+
+const genPath = (locations, user) => {
+  let points = [];
+  let times = Object.keys(locations);
+  let prevLat = 0;
+  let prevLong = 0;
+  let addresses = {};
+  let addrCircles = [];
+  let c = 0;
+  for (let i of times) {
+    c++;
+    let latitude = locations[i][user].latitude;
+    let longitude = locations[i][user].longitude;
+
+    if (locations[i][user].address && !addresses[locations[i][user].address]) {
+      addrCircles.push(
+        L.circle([latitude, longitude], {
+          color: "black",
+          radius: 50,
+        }).bindPopup(locations[i][user].address)
+      );
+      addresses[locations[i][user].address] = true;
+    }
+
+    points.push([latitude, longitude]);
+    prevLat = latitude;
+    prevLong = longitude;
+  }
+  map.flyTo([prevLat, prevLong], 15);
+  return [
+    L.polyline(points, {
+      color: "black",
+    }),
+  ].concat(addrCircles);
+};
+
+const showInfoPanel = (content) => {
+  let infoPanel = document.getElementById("infoPanel");
+  infoPanel.innerHTML = "";
+  infoPanel.appendChild(content);
+  infoPanel.style.pointerEvents = "all";
+  infoPanel.style.filter = "blur(0px)";
+  document.getElementById("mapWrap").style.filter = "blur(15px)";
+};
+
+const displayObject = (object) => {
+  let obj = document.createElement("div");
+  if (Array.isArray(object)) {
+    for (let i in object) {
+      obj.appendChild(createAttribute(i, displayObject(object[i])));
+    }
+    return obj;
+  }
+  for (let i of Object.keys(object)) {
+    obj.appendChild(
+      createAttribute(
+        i,
+        typeof object[i] == "object" && object[i]
+          ? displayObject(object[i])
+          : document.createTextNode(object[i])
+      )
+    );
+  }
+
+  return obj;
+};
+
+const createAttribute = (attribute, value) => {
+  let wrap = document.createElement("div");
+  wrap.appendChild(document.createTextNode(attribute + ": "));
+  wrap.appendChild(value);
+  wrap.setAttribute("class", "attribute");
+  return wrap;
+};
+
+const hideInfoPanel = () => {
+  document.getElementById("infoPanel").style.pointerEvents = "none";
+  document.getElementById("infoPanel").style.filter = "blur(500px)";
+  document.getElementById("mapWrap").style.filter = "unset";
+};
+
+let c = document.getElementById("userWrap").children;
+for (let element of c) {
+  element.addEventListener("click", () => {
+    if (currentlySelectedObj) {
+      currentlySelectedObj.style.transform = "unset";
+      currentlySelectedObj.style.boxShadow = "unset";
+    }
+    currentUserId = JSON.parse(element.getAttribute("data")).id;
+    element.style.boxShadow = "0px 0px 20px black";
+    element.style.transform = "scale(1.2)";
+    currentlySelectedObj = element;
+    displayMapStats();
+  });
+}
+
+const displayMapStats = async () => {
+  prevGeo.forEach((g) => g.remove());
+  let locs = await locationApi.getDataInTimespan(
+    cookie.pwd,
+    new Date(startDate.value).valueOf(),
+    new Date(endDate.value).valueOf()
+  );
+  let geometry = genPath(locs.locations, currentUserId);
+  for (let i of geometry) i.addTo(map);
+  prevGeo = geometry;
+};
+
+hideInfoPanel();
+
+const panels = [
+  {
+    show: async () => {
+      return displayObject(
+        await userApi.getLatestUserData(cookie.pwd, currentUserId)
+      );
+    },
+    hide: () => {},
+    trigger: document.getElementById("info"),
+  },
+  {
+    show: () => {
+      return document.getElementById("settings");
+    },
+    hide: (elem) => {
+      document.getElementsByClassName("hidden")[0].appendChild(elem);
+    },
+    trigger: document.getElementById("settingsButton"),
+  },
+  {
+    show: () => {
+      return document.getElementById("time");
+    },
+    hide: async (elem) => {
+      document.getElementsByClassName("hidden")[0].appendChild(elem);
+      if (new Date(startDate.value) > new Date(endDate.value))
+        startDate.value = new Date(new Date(endDate.value) - 8.64e7)
+          .toISOString()
+          .split(":")
+          .slice(0, 2)
+          .join(":");
+      document.getElementById("infoPanel").innerText = "Loading";
+      await displayMapStats();
+    },
+    trigger: document.getElementById("timeButton"),
+  },
+];
+
+const setupPanels = async () => {
+  let currentlyActivePanel;
+
+  let hide = async (panel) => {
+    panel.trigger.style.border = "none";
+    await panel.hide(document.getElementById("infoPanel").children[0]);
+    hideInfoPanel();
+  };
+
+  let show = async (panel) => {
+    panel.trigger.style.border = "1px solid black";
+    showInfoPanel(await panel.show());
+  };
+
+  panels.forEach((v) => {
+    v.trigger.addEventListener("click", async () => {
+      currentlyActivePanel && hide(currentlyActivePanel);
+      if (currentlyActivePanel != v) {
+        await show(v);
+        currentlyActivePanel = v;
+      } else {
+        currentlyActivePanel = undefined;
+      }
+    });
+  });
+};
+
+setupPanels();
+
+document.getElementById("logout").addEventListener("click", () => {
+  cookie.pwd = "undefined";
+  location.href = "../";
+});
+
+let timespan = await locationApi.getTimespan(cookie.pwd);
+let dateObjStart = new Date(Number(timespan.start));
+let dateObjEnd = new Date(Number(timespan.end));
+
+startDate.setAttribute(
+  "min",
+  dateObjStart.toISOString().split(":").slice(0, 2).join(":")
+);
+endDate.setAttribute(
+  "min",
+  dateObjStart.toISOString().split(":").slice(0, 2).join(":")
+);
+startDate.setAttribute(
+  "max",
+  dateObjEnd.toISOString().split(":").slice(0, 2).join(":")
+);
+endDate.setAttribute(
+  "max",
+  dateObjEnd.toISOString().split(":").slice(0, 2).join(":")
+);
+
+endDate.value = dateObjEnd.toISOString().split(":").slice(0, 2).join(":");
+startDate.value = new Date(timespan.end - 8.64e7)
+  .toISOString()
+  .split(":")
+  .slice(0, 2)
+  .join(":");
+
+document.getElementById("userWrap").children[0].click();

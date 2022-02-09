@@ -1,0 +1,23 @@
+{
+  "name": "life-360-display",
+  "version": "1.0.0",
+  "description": "Display the data from Proxtx/life-360-tracker",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "test": "nodemon ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Proxtx/life-360-display.git"
+  },
+  "author": "Proxtx",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Proxtx/life-360-display/issues"
+  },
+  "homepage": "https://github.com/Proxtx/life-360-display#readme",
+  "dependencies": {
+    "@proxtx/framework": "^1.0.6"
+  }
+}

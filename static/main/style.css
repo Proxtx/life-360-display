@@ -1,0 +1,80 @@
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 100vh;
+}
+
+.userCircle {
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  margin: 5px;
+  aspect-ratio: 1;
+  box-shadow: 0;
+  transition: 0.5s;
+}
+
+#userWrap {
+  display: flex;
+  flex-direction: row;
+  overflow-x: scroll;
+}
+
+.circle {
+  border-radius: 50%;
+  background-color: var(--buttonColor);
+  width: 25px;
+  height: 25px;
+  padding: 5px;
+  margin-right: 10px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#circleWrap {
+  display: flex;
+  flex-direction: row;
+  overflow-x: scroll;
+}
+
+#mapWrap {
+  position: relative;
+  height: 100%;
+  padding: 25px;
+  transition: 1s;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+#contentWrap {
+  position: relative;
+  height: 100%;
+}
+
+#infoPanel {
+  position: absolute;
+  width: 90%;
+  left: 5%;
+  top: 5%;
+  box-shadow: 0px 0px 20px 0px black;
+  display: unset;
+  transition: 0.55s;
+  overflow-x: scroll;
+}
+
+.attribute {
+  border-top: 1px solid black;
+  display: flex;
+  flex-direction: row;
+}

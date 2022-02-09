@@ -1,0 +1,68 @@
+@font-face {
+  font-family: "Roboto Mono";
+  src: url(robotoMono.ttf);
+}
+
+:root {
+  --background: #f5f5f5;
+  --dialogueBackground: #e4e4e4;
+  --textLight: #494949;
+  --text: black;
+  --listColor1: #d0d0d0;
+  --listColor2: #dedede;
+  --buttonColor: #c4c4c4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.box {
+  background-color: var(--dialogueBackground);
+  padding: 15px;
+}
+
+.button {
+  background-color: var(--buttonColor);
+  border: 0;
+  border-radius: 0;
+  padding: 10px;
+  font-family: "Roboto Mono";
+  margin: 5px;
+}
+
+*:focus {
+  outline: none;
+}
+
+body {
+  background-color: var(--background);
+  font-family: "Roboto Mono";
+}
+
+.heading {
+  text-align: center;
+  font-size: 18px;
+  color: black;
+}
+
+.text {
+  font-size: 12px;
+  color: black;
+}
+
+.lightText {
+  color: var(--textLight);
+  font-size: 12px;
+}
+
+.input {
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 9px;
+  padding-bottom: 9px;
+  width: 100%;
+  background-color: var(--background);
+  border: 0;
+  font-family: "Roboto Mono";
+}

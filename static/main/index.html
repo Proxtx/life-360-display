@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Life 360 Display</title>
+    <link rel="stylesheet" href="../main.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="leaflet.css" />
+    <script src="leaflet.js"></script>
+  </head>
+  <body>
+    <div class="hidden">
+      <div id="accessToken"></div>
+      <div id="settings">
+        <button class="button" id="logout">Logout</button><br />
+        <button
+          class="button"
+          onclick="window.open('https:\/\/github.com/Proxtx/life-360-display/')"
+        >
+          Github</button
+        ><br />
+        <button
+          class="button"
+          onclick="window.open('https:\/\/github.com/Proxtx/life-360-tracker/')"
+        >
+          Tracker</button
+        ><br />
+        <button
+          class="button"
+          onclick="alert('Hahahahahahahahahahahahahahahahahahaha')"
+          style="background-color: rgb(253, 89, 89)"
+        >
+          Don't track me.
+        </button>
+      </div>
+      <div id="time">
+        <input type="datetime-local" id="startDate" /> <a>Start</a><br />
+        <input type="datetime-local" id="endDate" /> <a>End</a>
+      </div>
+      <img class="userCircle" id="template" />
+    </div>
+    <div class="box">
+      <div id="userWrap"></div>
+      <div id="circleWrap">
+        <div class="circle" id="info">i</div>
+        <div class="circle" id="settingsButton"><img src="setting.svg" /></div>
+        <div class="circle" id="timeButton"><img src="time.svg" /></div>
+      </div>
+    </div>
+    <div id="contentWrap">
+      <div id="mapWrap">
+        <div id="map"></div>
+      </div>
+      <div id="infoPanel" class="box"></div>
+    </div>
+    <script src="private/login.js" id="server"></script>
+    <script src="main.js" type="module"></script>
+  </body>
+</html>
