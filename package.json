@@ -18,6 +18,6 @@
   },
   "homepage": "https://github.com/Proxtx/life-360-display#readme",
   "dependencies": {
-    "@proxtx/framework": "^1.0.6"
+    "@proxtx/framework": "^1.0.7"
   }
 }
