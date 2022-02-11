@@ -19,10 +19,8 @@ export const getTimespan = async (folder) => {
 export const getDataInTimespan = async (folder, start, end) => {
   let files = await getFilesInOrder(folder);
   let lookingForEnd = false;
-  console.log(files);
   let filesToLoad = [];
   for (let i of files) {
-    console.log(i > start);
     if (!lookingForEnd) {
       if (i > start) {
         lookingForEnd = true;
@@ -37,7 +35,6 @@ export const getDataInTimespan = async (folder, start, end) => {
     }
     filesToLoad.push(i);
   }
-  console.log(filesToLoad);
   let resultObject = {};
   for (let i in filesToLoad) {
     let load = await loadFile(folder, filesToLoad[i] + ".json");
