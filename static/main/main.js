@@ -27,8 +27,6 @@ L.tileLayer(
   }
 ).addTo(map);
 
-window.map = map;
-
 const genPath = (locations, user) => {
   let points = [];
   let times = Object.keys(locations);
@@ -131,7 +129,7 @@ const displayMapStats = async () => {
     new Date(startDate.value).valueOf(),
     new Date(endDate.value).valueOf()
   );
-  let geometry = genPath(locs.locations, currentUserId);
+  let geometry = genPath(locs.result, currentUserId);
   for (let i of geometry) i.addTo(map);
   prevGeo = geometry;
 };
@@ -214,6 +212,13 @@ let timespan = await locationApi.getTimespan(cookie.pwd);
 let dateObjStart = new Date(Number(timespan.start));
 let dateObjEnd = new Date(Number(timespan.end));
 
+const updateDateInfo = (date) => {
+  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+};
+
+updateDateInfo(dateObjStart);
+updateDateInfo(dateObjEnd);
+
 startDate.setAttribute(
   "min",
   dateObjStart.toISOString().split(":").slice(0, 2).join(":")
@@ -232,7 +237,7 @@ endDate.setAttribute(
 );
 
 endDate.value = dateObjEnd.toISOString().split(":").slice(0, 2).join(":");
-startDate.value = new Date(timespan.end - 8.64e7)
+startDate.value = new Date(dateObjEnd - 8.64e7)
   .toISOString()
   .split(":")
   .slice(0, 2)

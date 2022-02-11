@@ -1,14 +1,18 @@
 import { config } from "../config.js";
 import { checkPassword } from "./login.js";
-import { getFilesInOrder, loadFile, getTimesInFileInOrder } from "./data.js";
+import {
+  getFilesInOrder,
+  loadFile,
+  getTimesInFileInOrder,
+} from "../private/file.js";
 
 export const getUser = async (pwd) => {
   let check = checkPassword(pwd);
   if (!check.success) return check;
 
-  let load = await getFilesInOrder(pwd);
+  let load = await getFilesInOrder(config.data);
   let file = load[load.length - 1];
-  let user = JSON.parse((await loadFile(pwd, file + ".json")).file);
+  let user = JSON.parse((await loadFile(config.data, file + ".json")).file);
   user = user[Object.keys(user)[Object.keys(user).length - 1]];
 
   let userInfo = [];
@@ -21,7 +25,6 @@ export const getUser = async (pwd) => {
       avatar: user[i].avatar,
     });
   }
-
   return userInfo;
 };
 
@@ -29,10 +32,10 @@ export const getLatestUserData = async (pwd, id) => {
   let check = checkPassword(pwd);
   if (!check.success) return check;
 
-  let load = await getFilesInOrder(pwd);
+  let load = await getFilesInOrder(config.data);
   load = load[Object.keys(load)[Object.keys(load).length - 1]];
 
-  let raw = await loadFile(pwd, load + ".json");
+  let raw = await loadFile(config.data, load + ".json");
   let infos = JSON.parse(raw.file);
   let times = getTimesInFileInOrder(raw.file);
   return infos[times[times.length - 1]][id];
