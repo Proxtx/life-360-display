@@ -18,16 +18,17 @@ export const getTimespan = async (folder) => {
 
 export const getDataInTimespan = async (folder, start, end) => {
   let files = await getFilesInOrder(folder);
-  let startFile;
   let lookingForEnd = false;
+  console.log(files);
   let filesToLoad = [];
   for (let i of files) {
+    console.log(i > start);
     if (!lookingForEnd) {
       if (i > start) {
-        filesToLoad.push(startFile);
         lookingForEnd = true;
       } else {
-        startFile = i;
+        filesToLoad = [];
+        filesToLoad.push(i);
         continue;
       }
     }
@@ -36,6 +37,7 @@ export const getDataInTimespan = async (folder, start, end) => {
     }
     filesToLoad.push(i);
   }
+  console.log(filesToLoad);
   let resultObject = {};
   for (let i in filesToLoad) {
     let load = await loadFile(folder, filesToLoad[i] + ".json");
@@ -43,7 +45,6 @@ export const getDataInTimespan = async (folder, start, end) => {
   }
   let locationData = filesToLoad;
   let startData = locationData.shift();
-
   for (let i of getTimesInFileInOrder(startData)) {
     if (i > start) {
       resultObject[i] = startData[i];
