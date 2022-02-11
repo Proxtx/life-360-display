@@ -5,6 +5,7 @@ import {
   loadFile,
   getTimesInFileInOrder,
 } from "../private/file.js";
+import { getDataInTimespan } from "./data.js";
 
 export const getUser = async (pwd) => {
   let check = checkPassword(pwd);
@@ -39,4 +40,16 @@ export const getLatestUserData = async (pwd, id) => {
   let infos = JSON.parse(raw.file);
   let times = getTimesInFileInOrder(raw.file);
   return infos[times[times.length - 1]][id];
+};
+
+export const getUserData = async (pwd, id, end) => {
+  let check = checkPassword(pwd);
+  if (!check.success) return check;
+  let data = (await getDataInTimespan(pwd, end - 1000000000, end)).result;
+  let timesInOrder = getTimesInFileInOrder(data);
+  data = data[timesInOrder[timesInOrder.length - 1]][id];
+  data.time = new Date(
+    Number(timesInOrder[timesInOrder.length - 1])
+  ).toISOString();
+  return { success: true, data };
 };

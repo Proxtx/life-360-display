@@ -140,7 +140,13 @@ const panels = [
   {
     show: async () => {
       return displayObject(
-        await userApi.getLatestUserData(cookie.pwd, currentUserId)
+        (
+          await userApi.getUserData(
+            cookie.pwd,
+            currentUserId,
+            new Date(endDate.value).valueOf()
+          )
+        ).data
       );
     },
     hide: () => {},
@@ -162,11 +168,13 @@ const panels = [
     hide: async (elem) => {
       document.getElementsByClassName("hidden")[0].appendChild(elem);
       if (new Date(startDate.value) > new Date(endDate.value))
-        startDate.value = new Date(new Date(endDate.value) - 8.64e7)
-          .toISOString()
-          .split(":")
-          .slice(0, 2)
-          .join(":");
+        startDate.value = updateDateInfo(
+          new Date(new Date(endDate.value) - 8.64e7)
+            .toISOString()
+            .split(":")
+            .slice(0, 2)
+            .join(":")
+        );
       document.getElementById("infoPanel").innerText = "Loading";
       await displayMapStats();
     },
