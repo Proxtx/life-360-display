@@ -45,7 +45,7 @@ export const getLatestUserData = async (pwd, id) => {
 export const getUserData = async (pwd, id, end) => {
   let check = checkPassword(pwd);
   if (!check.success) return check;
-  let data = (await getDataInTimespan(pwd, end - 1000000000, end)).result;
+  let data = (await getDataInTimespan(pwd, Number(end), Number(end))).result;
   let timesInOrder = getTimesInFileInOrder(data);
   data = data[timesInOrder[timesInOrder.length - 1]][id];
   data.time = new Date(

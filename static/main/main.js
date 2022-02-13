@@ -27,14 +27,13 @@ L.tileLayer(
   }
 ).addTo(map);
 
-const genPath = (locations, user) => {
+const genPath = (locations, user, userAvatar) => {
   let points = [];
   let times = Object.keys(locations);
   let prevLat = 0;
   let prevLong = 0;
   let addresses = {};
   let addrCircles = [];
-  let c = 0;
   for (let i of times) {
     c++;
     let latitude = locations[i][user].latitude;
@@ -45,7 +44,14 @@ const genPath = (locations, user) => {
         L.circle([latitude, longitude], {
           color: "black",
           radius: 50,
-        }).bindPopup(locations[i][user].address)
+        }).bindPopup(
+          "<h2>" +
+            locations[i][user].address +
+            "</h2>" +
+            '<button class="button" onclick="window.displayInfo(' +
+            i +
+            ')">More Info</button><div></div>'
+        )
       );
       addresses[locations[i][user].address] = true;
     }
@@ -55,6 +61,12 @@ const genPath = (locations, user) => {
     prevLong = longitude;
   }
   map.flyTo([prevLat, prevLong], 15);
+  addrCircles.push(
+    L.circle([prevLat, prevLong], {
+      color: "white",
+      radius: 10,
+    }).bindPopup("Current Position")
+  );
   return [
     L.polyline(points, {
       color: "black",
@@ -127,7 +139,8 @@ const displayMapStats = async () => {
   let locs = await locationApi.getDataInTimespan(
     cookie.pwd,
     new Date(startDate.value).valueOf(),
-    new Date(endDate.value).valueOf()
+    new Date(endDate.value).valueOf(),
+    currentUserId
   );
   let geometry = genPath(locs.result, currentUserId);
   for (let i of geometry) i.addTo(map);
@@ -170,11 +183,12 @@ const panels = [
       if (new Date(startDate.value) > new Date(endDate.value))
         startDate.value = updateDateInfo(
           new Date(new Date(endDate.value) - 8.64e7)
-            .toISOString()
-            .split(":")
-            .slice(0, 2)
-            .join(":")
-        );
+        )
+          .toISOString()
+          .split(":")
+          .slice(0, 2)
+          .join(":");
+
       document.getElementById("infoPanel").innerText = "Loading";
       await displayMapStats();
     },
@@ -209,6 +223,15 @@ const setupPanels = async () => {
   });
 };
 
+window.displayInfo = async (time) => {
+  await document.getElementById("info").click();
+  showInfoPanel(
+    displayObject(
+      (await userApi.getUserData(cookie.pwd, currentUserId, time)).data
+    )
+  );
+};
+
 setupPanels();
 
 document.getElementById("logout").addEventListener("click", () => {
@@ -222,6 +245,7 @@ let dateObjEnd = new Date(Number(timespan.end));
 
 const updateDateInfo = (date) => {
   date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+  return date;
 };
 
 updateDateInfo(dateObjStart);

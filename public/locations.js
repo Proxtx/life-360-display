@@ -1,6 +1,5 @@
 import { config } from "../config.js";
 import { checkPassword } from "./login.js";
-import fs from "fs/promises";
 import * as file from "../private/file.js";
 
 export const getTimespan = async (pwd) => {
@@ -9,9 +8,14 @@ export const getTimespan = async (pwd) => {
   return await file.getTimespan(config.locations);
 };
 
-export const getDataInTimespan = async (pwd, start, end) => {
+export const getDataInTimespan = async (pwd, start, end, id) => {
   let check = checkPassword(pwd);
   if (!check.success) return check;
 
-  return file.getDataInTimespan(config.locations, start, end);
+  let result = await file.getDataInTimespan(config.locations, start, end);
+  if (!result.success) return result;
+  Object.keys(result.result).forEach((v) => {
+    result.result[v] = { [id]: result.result[v][id] };
+  });
+  return result;
 };

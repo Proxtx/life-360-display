@@ -35,33 +35,34 @@ export const getDataInTimespan = async (folder, start, end) => {
     }
     filesToLoad.push(i);
   }
+
   let resultObject = {};
+  let loadedFiles = [];
+
   for (let i in filesToLoad) {
     let load = await loadFile(folder, filesToLoad[i] + ".json");
-    filesToLoad[i] = JSON.parse(load.file);
+    loadedFiles[i] = JSON.parse(load.file);
   }
-  let locationData = filesToLoad;
-  let startData = locationData.shift();
-  for (let i of getTimesInFileInOrder(startData)) {
-    if (i > start) {
-      resultObject[i] = startData[i];
-    }
+
+  let locationData = {};
+  for (let i of loadedFiles) {
+    locationData = { ...locationData, ...i };
   }
-  if (locationData.length > 0) {
-    let endData = locationData.pop();
-    for (let i of locationData) {
-      resultObject = { ...resultObject, ...i };
-    }
-    if (endData) {
-      for (let i of getTimesInFileInOrder(endData)) {
-        if (i < end) {
-          resultObject[i] = endData[i];
-        }
-      }
+
+  for (let i of getTimesInFileInOrder(locationData)) {
+    if (i > start) resultObject[i] = locationData[i];
+    if (i > end) {
+      break;
     }
   }
 
-  return { success: true, result: resultObject, test: "yes" };
+  if (Object.keys(resultObject).length == 0) {
+    let timesInStartData = getTimesInFileInOrder(locationData);
+    resultObject[timesInStartData[timesInStartData.length - 1]] =
+      locationData[timesInStartData[timesInStartData.length - 1]];
+  }
+
+  return { success: true, result: resultObject };
 };
 
 export const getFilesInOrder = async (folder) => {
