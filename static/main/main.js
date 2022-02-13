@@ -35,30 +35,35 @@ const genPath = (locations, user, userAvatar) => {
   let addresses = {};
   let addrCircles = [];
   for (let i of times) {
-    c++;
-    let latitude = locations[i][user].latitude;
-    let longitude = locations[i][user].longitude;
+    try {
+      c++;
+      let latitude = locations[i][user].latitude;
+      let longitude = locations[i][user].longitude;
 
-    if (locations[i][user].address && !addresses[locations[i][user].address]) {
-      addrCircles.push(
-        L.circle([latitude, longitude], {
-          color: "black",
-          radius: 50,
-        }).bindPopup(
-          "<h2>" +
-            locations[i][user].address +
-            "</h2>" +
-            '<button class="button" onclick="window.displayInfo(' +
-            i +
-            ')">More Info</button><div></div>'
-        )
-      );
-      addresses[locations[i][user].address] = true;
-    }
+      if (
+        locations[i][user].address &&
+        !addresses[locations[i][user].address]
+      ) {
+        addrCircles.push(
+          L.circle([latitude, longitude], {
+            color: "black",
+            radius: 50,
+          }).bindPopup(
+            "<h2>" +
+              locations[i][user].address +
+              "</h2>" +
+              '<button class="button" onclick="window.displayInfo(' +
+              i +
+              ')">More Info</button><div></div>'
+          )
+        );
+        addresses[locations[i][user].address] = true;
+      }
 
-    points.push([latitude, longitude]);
-    prevLat = latitude;
-    prevLong = longitude;
+      points.push([latitude, longitude]);
+      prevLat = latitude;
+      prevLong = longitude;
+    } catch (e) {}
   }
   map.flyTo([prevLat, prevLong], 15);
   addrCircles.push(
