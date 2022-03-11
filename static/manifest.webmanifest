@@ -1,0 +1,8 @@
+{
+  "background_color": "#b9b9b9",
+  "description": "Display the Location of your Circle",
+  "display": "minimal-ui",
+  "name": "Life  360 Display",
+  "short_name": "360 Display",
+  "start_url": "/index.html"
+}
