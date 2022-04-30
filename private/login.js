@@ -1,15 +1,15 @@
 import { config } from "../config.js";
 import { getUser } from "../public/user.js";
 
-export const server = async (document, req, res) => {
-  if (req.cookies.pwd != config.password) {
+export const server = async (document, options) => {
+  if (options.req.cookies.pwd != config.password) {
     let elem = document.createElement("a");
     elem.setAttribute("href", "/");
     elem.innerText = "You are not authorized. Go back.";
     document.body.innerHTML = "";
     document.body.appendChild(elem);
   }
-  let user = await getUser(req.cookies.pwd);
+  let user = await getUser(options.req.cookies.pwd);
   for (let i of user) {
     createUser(document, i);
   }
