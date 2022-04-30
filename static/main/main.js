@@ -193,7 +193,7 @@ const panels = [
     hide: async (elem) => {
       document.getElementsByClassName("hidden")[0].appendChild(elem);
       if (useDate.checked) {
-        let date = new Date(startDate.value);
+        let date = new Date(endDate.value);
         date.setHours(0);
         date.setMinutes(0);
         date.setSeconds(0);
@@ -281,8 +281,8 @@ startDate.value = new Date(dateObjEnd - 8.64e7)
   .join(":");
 
 useDate.addEventListener("change", () => {
-  if (useDate.checked) endDateWrap.style.display = "none";
-  else endDateWrap.style.display = "unset";
+  if (useDate.checked) startDateWrap.style.display = "none";
+  else startDateWrap.style.display = "unset";
 });
 
 document.getElementById("userWrap").children[0].click();
