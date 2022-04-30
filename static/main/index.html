@@ -37,8 +37,16 @@
         <p>Build upon @proxtx/framework</p>
       </div>
       <div id="time">
-        <input type="datetime-local" id="startDate" /> <a>Start</a><br />
-        <input type="datetime-local" id="endDate" /> <a>End</a>
+        <div id="startDateWrap">
+          <input type="datetime-local" id="startDate" /> <a>Start</a>
+        </div>
+        <div id="endDateWrap">
+          <input type="datetime-local" id="endDate" /> <a>End</a>
+        </div>
+        <div class="line"></div>
+        <input type="checkbox" id="useDate" /><label class="label"
+          >Use Date</label
+        >
       </div>
       <img class="userCircle" id="template" />
     </div>

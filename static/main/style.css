@@ -88,3 +88,14 @@ body {
   flex-direction: column;
   overflow-x: scroll;
 }
+
+.line {
+  width: 100%;
+  border-top: 0.5px solid black;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.label {
+  margin-left: 5px;
+}

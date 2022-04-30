@@ -4,6 +4,9 @@ while (!window.L) {
 
 let startDate = document.getElementById("startDate");
 let endDate = document.getElementById("endDate");
+let useDate = document.getElementById("useDate");
+let startDateWrap = document.getElementById("startDateWrap");
+let endDateWrap = document.getElementById("endDateWrap");
 let locationApi = await load("locations.js");
 let userApi = await load("user.js");
 let dataApi = await load("data.js");
@@ -86,6 +89,10 @@ const showInfoPanel = (content) => {
   infoPanel.style.pointerEvents = "all";
   infoPanel.style.filter = "blur(0px)";
   document.getElementById("mapWrap").style.filter = "blur(15px)";
+};
+
+const parseDate = (date) => {
+  return date.toISOString().split(":").slice(0, 2).join(":");
 };
 
 const displayObject = (object) => {
@@ -185,14 +192,19 @@ const panels = [
     },
     hide: async (elem) => {
       document.getElementsByClassName("hidden")[0].appendChild(elem);
+      if (useDate.checked) {
+        let date = new Date(startDate.value);
+        date.setHours(0);
+        date.setMinutes(0);
+        date.setSeconds(0);
+        startDate.value = parseDate(date);
+        date.setHours(date.getHours() + 24);
+        endDate.value = parseDate(date);
+      }
       if (new Date(startDate.value) > new Date(endDate.value))
-        startDate.value = updateDateInfo(
-          new Date(new Date(endDate.value) - 8.64e7)
-        )
-          .toISOString()
-          .split(":")
-          .slice(0, 2)
-          .join(":");
+        startDate.value = parseDate(
+          updateDateInfo(new Date(new Date(endDate.value) - 8.64e7))
+        );
 
       document.getElementById("infoPanel").innerText = "Loading";
       await displayMapStats();
@@ -256,28 +268,21 @@ const updateDateInfo = (date) => {
 updateDateInfo(dateObjStart);
 updateDateInfo(dateObjEnd);
 
-startDate.setAttribute(
-  "min",
-  dateObjStart.toISOString().split(":").slice(0, 2).join(":")
-);
-endDate.setAttribute(
-  "min",
-  dateObjStart.toISOString().split(":").slice(0, 2).join(":")
-);
-startDate.setAttribute(
-  "max",
-  dateObjEnd.toISOString().split(":").slice(0, 2).join(":")
-);
-endDate.setAttribute(
-  "max",
-  dateObjEnd.toISOString().split(":").slice(0, 2).join(":")
-);
+startDate.setAttribute("min", parseDate(dateObjStart));
+endDate.setAttribute("min", parseDate(dateObjStart));
+startDate.setAttribute("max", parseDate(dateObjEnd));
+endDate.setAttribute("max", parseDate(dateObjEnd));
 
-endDate.value = dateObjEnd.toISOString().split(":").slice(0, 2).join(":");
+endDate.value = parseDate(dateObjEnd);
 startDate.value = new Date(dateObjEnd - 8.64e7)
   .toISOString()
   .split(":")
   .slice(0, 2)
   .join(":");
+
+useDate.addEventListener("change", () => {
+  if (useDate.checked) endDateWrap.style.display = "none";
+  else endDateWrap.style.display = "unset";
+});
 
 document.getElementById("userWrap").children[0].click();
