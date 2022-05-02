@@ -1,5 +1,15 @@
 while (!window.L) {
-  await new Promise((r) => setTimeout(r, 1000));
+  await new Promise((r) => setTimeout(r, 500));
+}
+
+if (localStorage.osmb == "true") {
+  let osmbScript = document.createElement("script");
+  osmbScript.src =
+    "https://cdn.osmbuildings.org/classic/0.2.2b/OSMBuildings-Leaflet.js";
+  document.body.appendChild(osmbScript);
+  while (!window.OSMBuildings) {
+    await new Promise((r) => setTimeout(r, 500));
+  }
 }
 
 let startDate = document.getElementById("startDate");
@@ -29,9 +39,10 @@ L.tileLayer(
   }
 ).addTo(map);
 
-var osmb = new OSMBuildings(map).load(
-  "https://{s}.data.osmbuildings.org/0.2/anonymous/tile/{z}/{x}/{y}.json"
-);
+if (localStorage.osmb == "true")
+  new OSMBuildings(map).load(
+    "https://{s}.data.osmbuildings.org/0.2/anonymous/tile/{z}/{x}/{y}.json"
+  );
 
 const genPath = (locations, user, userAvatar) => {
   let points = [];

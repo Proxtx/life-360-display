@@ -99,3 +99,11 @@ body {
 .label {
   margin-left: 5px;
 }
+
+.hideScrollbar {
+  scrollbar-width: none;
+}
+
+.hideScrollbar::-webkit-scrollbar {
+  display: none;
+}

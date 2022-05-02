@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="leaflet.css" />
     <script src="leaflet.js"></script>
-    <script src="https://cdn.osmbuildings.org/classic/0.2.2b/OSMBuildings-Leaflet.js"></script>
   </head>
   <body>
     <div class="hidden">
@@ -27,6 +26,12 @@
           onclick="window.open('https:\/\/github.com/Proxtx/life-360-tracker/')"
         >
           Tracker</button
+        ><br />
+        <button
+          class="button"
+          onclick="localStorage.osmb = localStorage.osmb == 'true' ? false : true"
+        >
+          OpenStreetMap Buildings</button
         ><br />
         <button
           class="button"
@@ -52,8 +57,8 @@
       <img class="userCircle" id="template" />
     </div>
     <div class="box">
-      <div id="userWrap"></div>
-      <div id="circleWrap">
+      <div id="userWrap" class="hideScrollbar"></div>
+      <div id="circleWrap" class="hideScrollbar">
         <div class="circle" id="info">i</div>
         <div class="circle" id="settingsButton"><img src="setting.svg" /></div>
         <div class="circle" id="timeButton"><img src="time.svg" /></div>
