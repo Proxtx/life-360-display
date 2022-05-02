@@ -14,8 +14,7 @@ let currentlySelectedObj;
 let currentUserId;
 let prevGeo = [];
 
-const map = L.map("map").setView([0, 0]);
-map.setZoom(5);
+const map = L.map("map").setView([0, 0], 5);
 
 L.tileLayer(
   "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
@@ -29,6 +28,10 @@ L.tileLayer(
     accessToken: document.getElementById("accessToken").getAttribute("data"),
   }
 ).addTo(map);
+
+var osmb = new OSMBuildings(map).load(
+  "https://{s}.data.osmbuildings.org/0.2/anonymous/tile/{z}/{x}/{y}.json"
+);
 
 const genPath = (locations, user, userAvatar) => {
   let points = [];
