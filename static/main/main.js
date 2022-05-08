@@ -211,6 +211,7 @@ const panels = [
         date.setHours(0);
         date.setMinutes(0);
         date.setSeconds(0);
+        date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
         startDate.value = parseDate(date);
         date.setHours(date.getHours() + 24);
         endDate.value = parseDate(date);
