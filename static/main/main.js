@@ -207,7 +207,7 @@ const panels = [
     hide: async (elem) => {
       document.getElementsByClassName("hidden")[0].appendChild(elem);
       if (useDate.checked) {
-        let date = new Date(endDate.value);
+        let date = new Date(startDate.value);
         date.setHours(0);
         date.setMinutes(0);
         date.setSeconds(0);
