@@ -296,8 +296,8 @@ startDate.value = new Date(dateObjEnd - 8.64e7)
   .join(":");
 
 useDate.addEventListener("change", () => {
-  if (useDate.checked) startDateWrap.style.display = "none";
-  else startDateWrap.style.display = "unset";
+  if (useDate.checked) endDateWrap.style.display = "none";
+  else endDateWrap.style.display = "unset";
 });
 
 document.getElementById("userWrap").children[0].click();
