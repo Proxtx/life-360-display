@@ -1,5 +1,5 @@
 # life-360-display
-Display the data from Proxtx/life-360-tracker as a webpage. This of couse is password secured
+Display the data from Proxtx/life-360-tracker https://github.com/Proxtx/life-360-tracker as a webpage. This of couse is password secured
 
 # How to use
 1. git clone https://github.com/Proxtx/life-360-display/
